@@ -80,7 +80,7 @@ FoodGo is a food ordering website. Customers browse a menu, open a dish, build a
 
 GitHub is the source-code repository for FoodGo.
 
-Vercel is used only as a development and preview deployment. It is not the final submission.
+Vercel is used only as a development and preview deployment: [project2-six-chi.vercel.app](https://project2-six-chi.vercel.app). It is not the final submission.
 
 The final university deployment will run on a VM, as required by the assignment. Serverless hosting is not the production target.
 
