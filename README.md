@@ -4,7 +4,8 @@ FoodGo is a food ordering website. Customers browse a menu, open a dish, build a
 
 ## Team Members
 
-- [S Min Thant](https://github.com/sminthant)
+- S Kyaw Zin Oo (6726012)
+- [Sa Min Thant](https://github.com/sminthant) (6736577)
 
 ## Tech Stack
 
