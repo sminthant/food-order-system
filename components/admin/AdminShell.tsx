@@ -94,8 +94,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-line bg-white/90 px-4 backdrop-blur lg:hidden">
           <button
             type="button"
-            aria-label="Open admin menu"
-            onClick={() => setOpenPath(pathname)}
+            aria-expanded={open}
+            aria-label={open ? "Close admin menu" : "Open admin menu"}
+            onClick={() => setOpenPath(open ? null : pathname)}
             className="grid h-9 w-9 place-items-center rounded-full hover:bg-stone-100"
           >
             <Menu className="h-4 w-4" />

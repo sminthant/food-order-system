@@ -4,6 +4,7 @@ export const orders: Order[] = [
   {
     id: "ord-1001",
     code: "FO-1001",
+    customerId: "cus-maya",
     customerName: "Maya Chen",
     customerEmail: "maya.chen@email.com",
     customerPhone: "081-234-5678",
@@ -36,6 +37,7 @@ export const orders: Order[] = [
   {
     id: "ord-1002",
     code: "FO-1002",
+    customerId: "cus-arun",
     customerName: "Arun Srisuk",
     customerEmail: "arun.srisuk@email.com",
     customerPhone: "089-441-2201",
@@ -68,6 +70,7 @@ export const orders: Order[] = [
   {
     id: "ord-1003",
     code: "FO-1003",
+    customerId: "cus-lena",
     customerName: "Lena Ortiz",
     customerEmail: "lena.ortiz@email.com",
     customerPhone: "086-778-0192",
@@ -100,6 +103,7 @@ export const orders: Order[] = [
   {
     id: "ord-1004",
     code: "FO-1004",
+    customerId: "cus-noah",
     customerName: "Noah Patel",
     customerEmail: "noah.patel@email.com",
     customerPhone: "092-330-8844",
@@ -139,6 +143,7 @@ export const orders: Order[] = [
   {
     id: "ord-1005",
     code: "FO-1005",
+    customerId: "cus-priya",
     customerName: "Priya Wong",
     customerEmail: "priya.wong@email.com",
     customerPhone: "081-909-3345",
@@ -171,6 +176,7 @@ export const orders: Order[] = [
   {
     id: "ord-1006",
     code: "FO-1006",
+    customerId: "cus-kenji",
     customerName: "Kenji Mori",
     customerEmail: "kenji.mori@email.com",
     customerPhone: "083-221-6670",
@@ -196,6 +202,7 @@ export const orders: Order[] = [
   {
     id: "ord-1007",
     code: "FO-1007",
+    customerId: "cus-maya",
     customerName: "Maya Chen",
     customerEmail: "maya.chen@email.com",
     customerPhone: "081-234-5678",
@@ -235,6 +242,7 @@ export const orders: Order[] = [
   {
     id: "ord-1008",
     code: "FO-1008",
+    customerId: "cus-kenji",
     customerName: "Kenji Mori",
     customerEmail: "kenji.mori@email.com",
     customerPhone: "083-221-6670",

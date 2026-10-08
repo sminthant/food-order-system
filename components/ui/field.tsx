@@ -1,8 +1,10 @@
-import type {
-  InputHTMLAttributes,
-  ReactNode,
-  SelectHTMLAttributes,
-  TextareaHTMLAttributes,
+import {
+  cloneElement,
+  isValidElement,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
 } from "react";
 import { cn } from "@/lib/cn";
 
@@ -22,20 +24,39 @@ export function Field({
   error?: string;
   children: ReactNode;
 }) {
+  const errorId = htmlFor && error ? `${htmlFor}-error` : undefined;
+  const hintId = htmlFor && hint && !error ? `${htmlFor}-hint` : undefined;
+  const describedBy = errorId ?? hintId;
+  const control = isValidElement<ControlProps>(children)
+    ? cloneElement(children, {
+        "aria-invalid": error ? true : undefined,
+        "aria-describedby": describedBy,
+      })
+    : children;
+
   return (
     <div>
       <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-ink">
         {label}
       </label>
-      {children}
+      {control}
       {error ? (
-        <p className="mt-1.5 text-sm text-red-700">{error}</p>
+        <p id={errorId} className="mt-1.5 text-sm text-red-700">
+          {error}
+        </p>
       ) : hint ? (
-        <p className="mt-1.5 text-xs text-muted">{hint}</p>
+        <p id={hintId} className="mt-1.5 text-xs text-muted">
+          {hint}
+        </p>
       ) : null}
     </div>
   );
 }
+
+type ControlProps = {
+  "aria-invalid"?: boolean;
+  "aria-describedby"?: string;
+};
 
 export function TextInput({
   className,

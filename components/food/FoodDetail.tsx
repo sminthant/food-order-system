@@ -85,13 +85,16 @@ export function FoodDetail() {
               </li>
             ))}
           </ul>
-          <div className="mt-8 hidden items-center gap-3 lg:flex">
-            <QuantitySelector value={quantity} onChange={setQuantity} />
-            <AddToCartButton foodId={food.id} quantity={quantity} size="lg" className="min-w-44" />
-          </div>
-          {!food.available ? (
-            <p className="mt-4 text-sm font-medium text-red-700">This dish is sold out right now.</p>
-          ) : null}
+          {food.available ? (
+            <div className="mt-8 hidden items-center gap-3 lg:flex">
+              <QuantitySelector value={quantity} onChange={setQuantity} />
+              <AddToCartButton foodId={food.id} quantity={quantity} size="lg" className="min-w-44" />
+            </div>
+          ) : (
+            <p className="mt-8 hidden text-sm font-medium text-red-700 lg:block">
+              This dish is sold out right now.
+            </p>
+          )}
         </div>
       </div>
 
@@ -112,10 +115,14 @@ export function FoodDetail() {
             <p className="text-xs text-muted">Total</p>
             <p className="font-semibold text-ink">{formatPrice(food.price * quantity)}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <QuantitySelector value={quantity} onChange={setQuantity} />
-            <AddToCartButton foodId={food.id} quantity={quantity} />
-          </div>
+          {food.available ? (
+            <div className="flex items-center gap-2">
+              <QuantitySelector value={quantity} onChange={setQuantity} />
+              <AddToCartButton foodId={food.id} quantity={quantity} />
+            </div>
+          ) : (
+            <p className="text-sm font-medium text-red-700">Sold out</p>
+          )}
         </div>
       </div>
     </Container>
