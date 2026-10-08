@@ -1,24 +1,17 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { CategoryForm } from "@/components/admin/FoodForm";
+import { CategoryForm, type CategoryDraft } from "@/components/admin/CategoryForm";
 import { CategoryGlyph } from "@/components/food/CategoryGlyph";
 import { FoodImage } from "@/components/food/FoodImage";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { useStore } from "@/components/providers/StoreProvider";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Modal } from "@/components/ui/Modal";
-import type { Category, CategoryIcon } from "@/types";
-
-type Draft = {
-  id: string;
-  name: string;
-  description: string;
-  icon: CategoryIcon;
-  image: string;
-};
+import type { Category } from "@/types";
 
 export function CategoriesPage() {
   const { categories, foods, hydrated, saveCategory, deleteCategory } = useStore();
@@ -28,17 +21,7 @@ export function CategoriesPage() {
 
   if (!hydrated) return <PageSkeleton />;
 
-  function toDraft(category: Category): Draft {
-    return {
-      id: category.id,
-      name: category.name,
-      description: category.description,
-      icon: category.icon,
-      image: category.image,
-    };
-  }
-
-  function save(draft: Draft) {
+  async function save(draft: CategoryDraft) {
     const base = draft.id || "category";
     let id = editing ? editing.id : base;
     if (!editing) {
@@ -48,7 +31,7 @@ export function CategoriesPage() {
         suffix += 1;
       }
     }
-    saveCategory({
+    const saved = await saveCategory({
       id,
       name: draft.name,
       slug: id,
@@ -56,6 +39,7 @@ export function CategoriesPage() {
       icon: draft.icon,
       image: draft.image,
     });
+    if (!saved) return;
     setEditing(undefined);
     setMessage("");
   }
@@ -67,7 +51,18 @@ export function CategoriesPage() {
         description="Organize the menu. A category can be deleted only when no foods use it."
         action={<Button onClick={() => setEditing(null)}>Add category</Button>}
       />
-      {message ? <p className="text-sm text-red-700">{message}</p> : null}
+      {message ? (
+        <p role="alert" className="text-sm text-red-700">
+          {message}
+        </p>
+      ) : null}
+      {categories.length === 0 ? (
+        <EmptyState
+          icon={<UtensilsCrossed className="h-5 w-5" />}
+          title="No categories yet."
+          description="Add a category before organizing the menu."
+        />
+      ) : (
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {categories.map((category) => {
           const count = foods.filter((food) => food.categoryId === category.id).length;
@@ -102,6 +97,7 @@ export function CategoriesPage() {
           );
         })}
       </div>
+      )}
 
       <Modal
         open={editing !== undefined}
@@ -109,7 +105,7 @@ export function CategoriesPage() {
         onClose={() => setEditing(undefined)}
       >
         <CategoryForm
-          initial={editing ? toDraft(editing) : null}
+          initial={editing}
           onCancel={() => setEditing(undefined)}
           onSubmit={save}
         />
@@ -127,9 +123,11 @@ export function CategoriesPage() {
             variant="danger"
             onClick={() => {
               if (!pendingDelete) return;
-              const result = deleteCategory(pendingDelete.id);
-              setMessage(result ?? "");
-              setPendingDelete(null);
+              const category = pendingDelete;
+              void deleteCategory(category.id).then((result) => {
+                setMessage(result ?? "");
+                setPendingDelete(null);
+              });
             }}
           >
             Delete

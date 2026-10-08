@@ -1,18 +1,15 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { FoodForm } from "@/components/admin/FoodForm";
-import { FoodImage } from "@/components/food/FoodImage";
+import { FoodTable } from "@/components/admin/FoodTable";
 import { SearchBar } from "@/components/food/SearchBar";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { useStore } from "@/components/providers/StoreProvider";
 import { Button } from "@/components/ui/button";
 import { SelectInput } from "@/components/ui/field";
 import { Modal } from "@/components/ui/Modal";
-import { categoryName } from "@/lib/catalog";
-import { formatPrice } from "@/lib/format";
 import type { Food } from "@/types";
 
 export function FoodsPage() {
@@ -53,65 +50,12 @@ export function FoodsPage() {
           ))}
         </SelectInput>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
-        <table className="w-full min-w-[860px] text-left text-sm">
-          <thead className="text-xs tracking-wide text-muted uppercase">
-            <tr>
-              <th className="px-4 py-3 font-medium">Food</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Price</th>
-              <th className="px-4 py-3 font-medium">Rating</th>
-              <th className="px-4 py-3 font-medium">Availability</th>
-              <th className="px-4 py-3 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-muted">
-                  No foods match this filter.
-                </td>
-              </tr>
-            ) : (
-              rows.map((food) => (
-                <tr key={food.id} className="border-t border-line">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                        <FoodImage src={food.image} alt="" sizes="48px" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-ink">{food.name}</p>
-                        <p className="line-clamp-1 max-w-xs text-xs text-muted">{food.description}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">{categoryName(categories, food.categoryId)}</td>
-                  <td className="px-4 py-3 font-medium">{formatPrice(food.price)}</td>
-                  <td className="px-4 py-3">{food.rating.toFixed(1)}</td>
-                  <td className="px-4 py-3">
-                    <span className={food.available ? "text-emerald-700" : "text-stone-500"}>
-                      {food.available ? "Available" : "Sold out"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => setEditing(food)} aria-label={`Edit ${food.name}`}>
-                        <Pencil className="h-4 w-4" />
-                        Edit
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={() => setPendingDelete(food)} aria-label={`Delete ${food.name}`}>
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <FoodTable
+        foods={rows}
+        categories={categories}
+        onEdit={setEditing}
+        onDelete={setPendingDelete}
+      />
 
       <Modal
         open={editing !== undefined}
@@ -124,8 +68,9 @@ export function FoodsPage() {
           categories={categories}
           onCancel={() => setEditing(undefined)}
           onSubmit={(food) => {
-            saveFood(food);
-            setEditing(undefined);
+            void saveFood(food).then((saved) => {
+              if (saved) setEditing(undefined);
+            });
           }}
         />
       </Modal>
@@ -145,8 +90,11 @@ export function FoodsPage() {
           <Button
             variant="danger"
             onClick={() => {
-              if (pendingDelete) deleteFood(pendingDelete.id);
-              setPendingDelete(null);
+              if (!pendingDelete) return;
+              const food = pendingDelete;
+              void deleteFood(food.id).then((deleted) => {
+                if (deleted) setPendingDelete(null);
+              });
             }}
           >
             Delete

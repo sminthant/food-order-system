@@ -10,8 +10,8 @@ import { OrderDetails } from "@/components/order/OrderDetails";
 import { useStore } from "@/components/providers/StoreProvider";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { FilterChip } from "@/components/ui/FilterChip";
 import { Modal } from "@/components/ui/Modal";
-import { cn } from "@/lib/cn";
 import { ORDER_STATUSES } from "@/lib/status";
 import type { Order, OrderStatus } from "@/types";
 
@@ -37,17 +37,17 @@ export function OrdersPage() {
       />
       <Container className="py-8 sm:py-10">
         <div className="flex gap-2 overflow-x-auto pb-1" role="toolbar" aria-label="Filter by status">
-          <StatusChip active={status === "all"} onClick={() => setStatus("all")}>
+          <FilterChip active={status === "all"} onClick={() => setStatus("all")}>
             All
-          </StatusChip>
+          </FilterChip>
           {ORDER_STATUSES.map((item) => (
-            <StatusChip
+            <FilterChip
               key={item.value}
               active={status === item.value}
               onClick={() => setStatus(item.value)}
             >
               {item.label}
-            </StatusChip>
+            </FilterChip>
           ))}
         </div>
 
@@ -72,29 +72,5 @@ export function OrdersPage() {
         {selected ? <OrderDetails order={selected} /> : null}
       </Modal>
     </>
-  );
-}
-
-function StatusChip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: string;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        "h-9 shrink-0 rounded-full px-4 text-sm font-medium",
-        active ? "bg-ink text-white" : "bg-white text-ink ring-1 ring-line hover:bg-stone-50",
-      )}
-    >
-      {children}
-    </button>
   );
 }

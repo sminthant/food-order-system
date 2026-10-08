@@ -118,7 +118,7 @@ function SettingsForm({
       <section className="max-w-xl rounded-2xl border border-line bg-white p-5 sm:p-6">
         <h2 className="font-semibold text-ink">Reset demo data</h2>
         <p className="mt-2 text-sm leading-6 text-muted">
-          Restore the original menu, orders, and empty cart. This clears edits saved in this browser.
+          Restore the original menu, customers, and orders in the database, and empty the cart on this device.
         </p>
         <Button variant="secondary" className="mt-4" onClick={() => setConfirmReset(true)}>
           Restore sample data
@@ -126,7 +126,7 @@ function SettingsForm({
       </section>
       <Modal open={confirmReset} title="Restore sample data" onClose={() => setConfirmReset(false)}>
         <p className="text-sm leading-6 text-muted">
-          This replaces the menu, categories, orders, cart, and settings with the original preview.
+          This replaces foods, categories, customers, and orders in the database with the original sample, and clears the cart on this device.
         </p>
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="secondary" onClick={() => setConfirmReset(false)}>

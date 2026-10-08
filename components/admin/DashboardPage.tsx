@@ -3,6 +3,7 @@
 import { Banknote, ClipboardList, Eye, Users, UtensilsCrossed } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { OrderTable } from "@/components/admin/OrderTable";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { OrderDetails } from "@/components/order/OrderDetails";
 import { StatusBadge } from "@/components/order/StatusBadge";
@@ -10,7 +11,7 @@ import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { useStore } from "@/components/providers/StoreProvider";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/Modal";
-import { formatDate, formatPrice } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { statusLabel } from "@/lib/status";
 import type { Order } from "@/types";
 
@@ -42,43 +43,23 @@ export function DashboardPage() {
       </div>
       <section>
         <h2 className="text-lg font-semibold text-ink">Recent orders</h2>
-        <div className="mt-4 overflow-x-auto rounded-2xl border border-line bg-white">
-          <table className="w-full min-w-[760px] text-left text-sm">
-            <thead className="text-xs tracking-wide text-muted uppercase">
-              <tr>
-                <th className="px-4 py-3 font-medium">Order ID</th>
-                <th className="px-4 py-3 font-medium">Customer</th>
-                <th className="px-4 py-3 font-medium">Items</th>
-                <th className="px-4 py-3 font-medium">Total</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Date</th>
-                <th className="px-4 py-3 font-medium">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recent.map((order) => (
-                <tr key={order.id} className="border-t border-line">
-                  <td className="px-4 py-3 font-medium text-ink">{order.code}</td>
-                  <td className="px-4 py-3">{order.customerName}</td>
-                  <td className="px-4 py-3 text-muted">
-                    {order.items.map((item) => `${item.name} × ${item.quantity}`).join(", ")}
-                  </td>
-                  <td className="px-4 py-3 font-medium">{formatPrice(order.total)}</td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={order.status} />
-                    <span className="sr-only">{statusLabel(order.status)}</span>
-                  </td>
-                  <td className="px-4 py-3 text-muted">{formatDate(order.createdAt)}</td>
-                  <td className="px-4 py-3">
-                    <Button size="sm" variant="ghost" onClick={() => setSelected(order)}>
-                      <Eye className="h-4 w-4" />
-                      View
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-4">
+          <OrderTable
+            orders={recent}
+            empty="No orders yet."
+            renderStatus={(order) => (
+              <>
+                <StatusBadge status={order.status} />
+                <span className="sr-only">{statusLabel(order.status)}</span>
+              </>
+            )}
+            renderAction={(order) => (
+              <Button size="sm" variant="ghost" onClick={() => setSelected(order)}>
+                <Eye className="h-4 w-4" />
+                View
+              </Button>
+            )}
+          />
         </div>
       </section>
       <Modal

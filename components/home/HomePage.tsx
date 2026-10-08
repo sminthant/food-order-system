@@ -5,6 +5,7 @@ import { CategoryCard } from "@/components/food/CategoryCard";
 import { FoodCard } from "@/components/food/FoodCard";
 import { Container } from "@/components/layout/Container";
 import { FoodImage } from "@/components/food/FoodImage";
+import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { useStore } from "@/components/providers/StoreProvider";
 import { ButtonLink } from "@/components/ui/button";
 import { features } from "@/data/site";
@@ -18,7 +19,8 @@ const featureIcons = {
 };
 
 export function HomePage() {
-  const { foods, categories, settings } = useStore();
+  const { foods, categories, settings, hydrated } = useStore();
+  if (!hydrated) return <PageSkeleton />;
   const popular = foods.filter((food) => food.popular).slice(0, 8);
   const featured = foods.find((food) => food.id === "classic-cheeseburger") ?? foods[0];
 

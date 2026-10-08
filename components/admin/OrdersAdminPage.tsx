@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { OrderTable } from "@/components/admin/OrderTable";
 import { OrderDetails } from "@/components/order/OrderDetails";
 import { StatusBadge } from "@/components/order/StatusBadge";
 import { SearchBar } from "@/components/food/SearchBar";
@@ -10,12 +11,11 @@ import { useStore } from "@/components/providers/StoreProvider";
 import { Button } from "@/components/ui/button";
 import { SelectInput } from "@/components/ui/field";
 import { Modal } from "@/components/ui/Modal";
-import { formatDate, formatPrice } from "@/lib/format";
 import { nextStatus, ORDER_STATUSES, statusLabel } from "@/lib/status";
 import type { Order, OrderStatus } from "@/types";
 
 export function OrdersAdminPage() {
-  const { orders, hydrated, updateOrderStatus } = useStore();
+  const { orders, hydrated, updateOrderStatus, deleteOrder } = useStore();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<OrderStatus | "all">("all");
   const [selected, setSelected] = useState<Order | null>(null);
@@ -60,71 +60,35 @@ export function OrdersAdminPage() {
           ))}
         </SelectInput>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-white">
-        <table className="w-full min-w-[920px] text-left text-sm">
-          <thead className="text-xs tracking-wide text-muted uppercase">
-            <tr>
-              <th className="px-4 py-3 font-medium">Order ID</th>
-              <th className="px-4 py-3 font-medium">Customer</th>
-              <th className="px-4 py-3 font-medium">Items</th>
-              <th className="px-4 py-3 font-medium">Total</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Date</th>
-              <th className="px-4 py-3 font-medium">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-muted">
-                  No orders match this filter.
-                </td>
-              </tr>
-            ) : (
-              rows.map((order) => (
-                <tr key={order.id} className="border-t border-line">
-                  <td className="px-4 py-3 font-medium text-ink">{order.code}</td>
-                  <td className="px-4 py-3">
-                    <p>{order.customerName}</p>
-                    <p className="text-xs text-muted">{order.customerPhone}</p>
-                  </td>
-                  <td className="max-w-xs px-4 py-3 text-muted">
-                    <p className="line-clamp-2">
-                      {order.items.map((item) => `${item.name} × ${item.quantity}`).join(", ")}
-                    </p>
-                  </td>
-                  <td className="px-4 py-3 font-medium">{formatPrice(order.total)}</td>
-                  <td className="px-4 py-3">
-                    <label className="sr-only" htmlFor={`status-${order.id}`}>
-                      Status for {order.code}
-                    </label>
-                    <SelectInput
-                      id={`status-${order.id}`}
-                      value={order.status}
-                      onChange={(event) =>
-                        updateOrderStatus(order.id, event.target.value as OrderStatus)
-                      }
-                      className="h-9"
-                    >
-                      {ORDER_STATUSES.map((item) => (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </SelectInput>
-                  </td>
-                  <td className="px-4 py-3 text-muted">{formatDate(order.createdAt)}</td>
-                  <td className="px-4 py-3">
-                    <Button size="sm" variant="secondary" onClick={() => setSelected(order)}>
-                      Details
-                    </Button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <OrderTable
+        orders={rows}
+        empty="No orders match this filter."
+        showPhone
+        renderStatus={(order) => (
+          <>
+            <label className="sr-only" htmlFor={`status-${order.id}`}>
+              Status for {order.code}
+            </label>
+            <SelectInput
+              id={`status-${order.id}`}
+              value={order.status}
+              onChange={(event) => updateOrderStatus(order.id, event.target.value as OrderStatus)}
+              className="h-9"
+            >
+              {ORDER_STATUSES.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </SelectInput>
+          </>
+        )}
+        renderAction={(order) => (
+          <Button size="sm" variant="secondary" onClick={() => setSelected(order)}>
+            Details
+          </Button>
+        )}
+      />
 
       <Modal open={Boolean(active)} title={active ? active.code : "Order"} onClose={() => setSelected(null)} wide>
         {active ? (
@@ -142,6 +106,17 @@ export function OrdersAdminPage() {
                   Cancel order
                 </Button>
               ) : null}
+              <Button
+                variant="danger"
+                onClick={() => {
+                  const id = active.id;
+                  void deleteOrder(id).then((deleted) => {
+                    if (deleted) setSelected(null);
+                  });
+                }}
+              >
+                Delete order
+              </Button>
             </div>
           </div>
         ) : null}

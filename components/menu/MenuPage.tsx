@@ -5,11 +5,13 @@ import { FoodCard } from "@/components/food/FoodCard";
 import { SearchBar } from "@/components/food/SearchBar";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { useStore } from "@/components/providers/StoreProvider";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { FilterChip } from "@/components/ui/FilterChip";
 import { SelectInput } from "@/components/ui/field";
 import { filterFoods, type FoodSort } from "@/lib/catalog";
-import { cn } from "@/lib/cn";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
@@ -21,7 +23,7 @@ const sorts: { value: FoodSort; label: string }[] = [
 ];
 
 export function MenuPage() {
-  const { foods, categories } = useStore();
+  const { foods, categories, hydrated } = useStore();
   const params = useSearchParams();
   const router = useRouter();
   const categoryParam = params.get("category") ?? "all";
@@ -44,6 +46,8 @@ export function MenuPage() {
     const next = query.toString();
     router.replace(next ? `/menu?${next}` : "/menu", { scroll: false });
   }
+
+  if (!hydrated) return <PageSkeleton />;
 
   return (
     <>
@@ -91,16 +95,15 @@ export function MenuPage() {
               title="No dishes match that search."
               description="Try another name, or clear the category filter."
               action={
-                <button
-                  type="button"
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     setSearch("");
                     selectCategory("all");
                   }}
-                  className="text-sm font-semibold text-brand hover:text-brand-dark"
                 >
                   Reset filters
-                </button>
+                </Button>
               }
             />
           </div>
@@ -113,29 +116,5 @@ export function MenuPage() {
         )}
       </Container>
     </>
-  );
-}
-
-function FilterChip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: string;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        "h-9 shrink-0 rounded-full px-4 text-sm font-medium transition",
-        active ? "bg-ink text-white" : "bg-white text-ink ring-1 ring-line hover:bg-stone-50",
-      )}
-    >
-      {children}
-    </button>
   );
 }

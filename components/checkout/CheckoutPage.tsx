@@ -68,7 +68,14 @@ export function CheckoutPage() {
           <p className="mt-2 text-sm text-muted">
             No payment was taken. Card details are not stored.
           </p>
-          <p className="mt-6 text-2xl font-semibold text-ink">{formatPrice(placed.total)}</p>
+          <ul className="mt-6 space-y-1 text-sm text-ink">
+            {placed.items.map((item) => (
+              <li key={`${item.foodId}-${item.name}`}>
+                {item.name} × {item.quantity}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-2xl font-semibold text-ink">{formatPrice(placed.total)}</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <ButtonLink href="/orders">View orders</ButtonLink>
             <ButtonLink href="/menu" variant="secondary">
@@ -124,13 +131,14 @@ export function CheckoutPage() {
     return Object.keys(next).length === 0;
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validate()) return;
 
     const order: Order = {
       id: createId("ord"),
       code: nextOrderCode(orders.map((item) => item.code)),
+      customerId: null,
       customerName: form.name.trim(),
       customerEmail: form.email.trim(),
       customerPhone: form.phone.trim(),
@@ -141,6 +149,7 @@ export function CheckoutPage() {
         price: line.food.price,
         quantity: line.quantity,
         image: line.food.image,
+        subtotal: line.lineTotal,
       })),
       subtotal: summary.subtotal,
       discount: summary.discount,
@@ -152,8 +161,8 @@ export function CheckoutPage() {
       createdAt: new Date().toISOString(),
     };
 
-    placeOrder(order);
-    setPlaced(order);
+    const saved = await placeOrder(order);
+    if (saved) setPlaced(saved);
   }
 
   return (
