@@ -21,6 +21,7 @@ export type Food = {
   name: string;
   description: string;
   price: number;
+  category?: string;
   categoryId: string;
   rating: number;
   reviewCount: number;
@@ -61,24 +62,35 @@ export type OrderItem = {
   name: string;
   price: number;
   quantity: number;
+  subtotal?: number;
   image: string;
 };
 
 export type Order = {
   id: string;
   code: string;
+  customerId: string | null;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
   address: string;
+  customer?: {
+    id: string | null;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
   items: OrderItem[];
   subtotal: number;
   discount: number;
   deliveryFee: number;
   total: number;
+  totalPrice?: number;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
   promoCode: string | null;
+  orderDate?: string;
   createdAt: string;
 };
 
