@@ -1,11 +1,12 @@
 "use client";
 
 import { Banknote, Check, CreditCard, ShoppingBag } from "lucide-react";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { CartSummary } from "@/components/cart/CartSummary";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useCartSummary, useStore } from "@/components/providers/StoreProvider";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -44,13 +45,25 @@ const initialForm: FormState = {
 };
 
 export function CheckoutPage() {
+  const { account } = useAuth();
   const { hydrated, orders, placeOrder, settings } = useStore();
+  const filledAccount = useRef(false);
   const [form, setForm] = useState<FormState>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoMessage, setPromoMessage] = useState("");
   const [placed, setPlaced] = useState<Order | null>(null);
   const { lines, summary } = useCartSummary(promoApplied);
+
+  useEffect(() => {
+    if (!account || filledAccount.current) return;
+    filledAccount.current = true;
+    setForm((current) => ({
+      ...current,
+      name: account.name,
+      email: account.email,
+    }));
+  }, [account]);
 
   if (!hydrated) return <PageSkeleton />;
 
@@ -138,7 +151,7 @@ export function CheckoutPage() {
     const order: Order = {
       id: createId("ord"),
       code: nextOrderCode(orders.map((item) => item.code)),
-      customerId: null,
+      customerId: account?.id ?? null,
       customerName: form.name.trim(),
       customerEmail: form.email.trim(),
       customerPhone: form.phone.trim(),

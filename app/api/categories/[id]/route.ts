@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { HttpError, jsonData, runHandler } from "@/lib/http";
 import { prepareRequest } from "@/lib/prepare";
 import { toCategory } from "@/lib/records";
@@ -23,6 +24,7 @@ export function GET(_request: Request, context: { params: Promise<{ id: string }
 export function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   return runHandler(async () => {
     await prepareRequest();
+    await requireAdmin();
     const id = await readParams(context.params);
     const body: unknown = await request.json().catch(() => null);
     const parsed = parseCategory(body, id);
@@ -38,6 +40,7 @@ export function PUT(request: Request, context: { params: Promise<{ id: string }>
 export function DELETE(_request: Request, context: { params: Promise<{ id: string }> }) {
   return runHandler(async () => {
     await prepareRequest();
+    await requireAdmin();
     const id = await readParams(context.params);
     const inUse = await FoodModel.exists({ categoryId: id });
     if (inUse) {

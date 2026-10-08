@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import "./globals.css";
 
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${outfit.variable} ${fraunces.variable} h-full antialiased`}>
       <body className="min-h-full bg-surface font-sans text-ink">
-        <StoreProvider>{children}</StoreProvider>
+        <StoreProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );

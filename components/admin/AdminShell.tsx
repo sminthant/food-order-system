@@ -11,8 +11,9 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { cn } from "@/lib/cn";
 
 const links = [
@@ -26,6 +27,8 @@ const links = [
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { account, logout } = useAuth();
   const [openPath, setOpenPath] = useState<string | null>(null);
   const open = openPath === pathname;
 
@@ -84,10 +87,23 @@ export function AdminShell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="border-t border-line p-4">
-          <Link href="/" className="text-sm font-medium text-ink hover:text-brand">
+        <div className="space-y-3 border-t border-line p-4">
+          {account ? <p className="truncate text-sm font-medium text-ink">{account.name}</p> : null}
+          <Link href="/" className="block text-sm font-medium text-ink hover:text-brand">
             View store
           </Link>
+          <button
+            type="button"
+            className="text-sm font-medium text-brand hover:text-brand-dark"
+            onClick={() => {
+              void logout().then(() => {
+                router.push("/login");
+                router.refresh();
+              });
+            }}
+          >
+            Log out
+          </button>
         </div>
       </aside>
       <div className="min-w-0">

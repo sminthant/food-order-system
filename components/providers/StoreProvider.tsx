@@ -56,6 +56,7 @@ type StoreValue = StoreState & {
   deleteCategory: (id: string) => Promise<string | null>;
   updateSettings: (settings: StoreSettings) => void;
   resetDemo: () => Promise<void>;
+  reloadCatalog: () => Promise<void>;
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -353,6 +354,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       },
       updateSettings(settings) {
         dispatch({ type: "settings", settings });
+      },
+      async reloadCatalog() {
+        await loadCatalog();
       },
       async resetDemo() {
         try {

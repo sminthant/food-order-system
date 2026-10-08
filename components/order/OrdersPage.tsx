@@ -33,7 +33,7 @@ export function OrdersPage() {
       <PageHeader
         eyebrow="Orders"
         title="Your orders"
-        description="Track sample orders and anything you place during this preview."
+        description="Orders placed with the account you are signed in with."
       />
       <Container className="py-8 sm:py-10">
         <div className="flex gap-2 overflow-x-auto pb-1" role="toolbar" aria-label="Filter by status">

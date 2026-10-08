@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { jsonData, runHandler } from "@/lib/http";
 import { prepareRequest } from "@/lib/prepare";
 import { toCategory } from "@/lib/records";
@@ -17,6 +18,7 @@ export function GET() {
 export function POST(request: Request) {
   return runHandler(async () => {
     await prepareRequest();
+    await requireAdmin();
     const body: unknown = await request.json().catch(() => null);
     const id = isRecord(body) && typeof body.id === "string" ? readId(body.id) : createId("cat");
     const existing = await CategoryModel.findOne({ id }).lean();

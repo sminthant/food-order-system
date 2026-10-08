@@ -2,6 +2,8 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useStore } from "@/components/providers/StoreProvider";
 import { Button } from "@/components/ui/button";
 
@@ -18,6 +20,9 @@ export function AddToCartButton({
   className?: string;
   label?: string;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { account, ready } = useAuth();
   const { foods, addToCart } = useStore();
   const food = foods.find((item) => item.id === foodId);
   const [added, setAdded] = useState(false);
@@ -32,6 +37,11 @@ export function AddToCartButton({
       className={className}
       disabled={disabled}
       onClick={() => {
+        if (!ready) return;
+        if (!account) {
+          router.push(`/login?next=${encodeURIComponent(pathname || "/menu")}`);
+          return;
+        }
         addToCart(foodId, quantity);
         setAdded(true);
         window.setTimeout(() => setAdded(false), 1200);

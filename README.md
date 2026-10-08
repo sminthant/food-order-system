@@ -99,4 +99,13 @@ Open [http://localhost:3000](http://localhost:3000). The admin area is at [http:
 
 `npm run seed` upserts the sample menu, customers, and orders. `npm run seed -- --reset` replaces them. In development, Admin → Settings can restore the same sample data.
 
-The cart and store settings stay in the browser. Placing an order, editing a dish, or changing an order status writes to MongoDB. The checkout code `FIRST20` takes 20% off the food subtotal. Card payment on checkout is a preview and does not charge a card. The login screen does not create an account yet.
+The cart and store settings stay in the browser. Placing an order, editing a dish, or changing an order status writes to MongoDB. The checkout code `FIRST20` takes 20% off the food subtotal. Card payment on checkout is a preview and does not charge a card.
+
+Sign in at `/login`. An admin account opens the admin dashboard. A customer account opens the food menu. The home page and About page stay public.
+
+Default accounts:
+
+| Role | Name | Email | Password | Opens |
+| --- | --- | --- | --- | --- |
+| Admin | admin | admin@gmail.com | admin1234 | `/admin` |
+| Customer | john | john@gmail.com | john1234 | `/menu` |

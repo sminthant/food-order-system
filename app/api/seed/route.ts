@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { jsonData, jsonError, runHandler } from "@/lib/http";
 import { prepareRequest } from "@/lib/prepare";
 import { seedDatabase } from "@/lib/seed";
@@ -9,6 +10,7 @@ export function POST(request: Request) {
       return jsonError(403, "Seeding is only available in development.");
     }
     await prepareRequest();
+    await requireAdmin();
     const body: unknown = await request.json().catch(() => null);
     const reset = isRecord(body) && body.reset === true;
     const counts = await seedDatabase(reset);

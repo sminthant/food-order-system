@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { createId } from "@/lib/cart";
 import { HttpError, jsonData, runHandler } from "@/lib/http";
 import { prepareRequest } from "@/lib/prepare";
@@ -41,6 +42,7 @@ export function GET(request: NextRequest) {
 export function POST(request: Request) {
   return runHandler(async () => {
     await prepareRequest();
+    await requireAdmin();
     const body: unknown = await request.json().catch(() => null);
     const id = isRecord(body) && typeof body.id === "string" ? readId(body.id) : createId("food");
     const existing = await FoodModel.findOne({ id }).lean();

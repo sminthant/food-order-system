@@ -1,3 +1,4 @@
+import { requireAccount, requireAdmin } from "@/lib/auth";
 import { HttpError, jsonData, runHandler } from "@/lib/http";
 import { prepareRequest } from "@/lib/prepare";
 import { toOrder } from "@/lib/records";
@@ -13,8 +14,11 @@ export function GET(_request: Request, context: { params: Promise<{ id: string }
   return runHandler(async () => {
     await prepareRequest();
     const id = await readParams(context.params);
+    const account = await requireAccount();
     const order = await OrderModel.findOne({ id }).lean();
-    if (!order) throw new HttpError(404, "Order not found");
+    if (!order || (account.role !== "admin" && order.customerId !== account.id)) {
+      throw new HttpError(404, "Order not found");
+    }
     return jsonData(toOrder(order));
   });
 }
@@ -22,6 +26,7 @@ export function GET(_request: Request, context: { params: Promise<{ id: string }
 export function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   return runHandler(async () => {
     await prepareRequest();
+    await requireAdmin();
     const id = await readParams(context.params);
     const current = await OrderModel.findOne({ id });
     if (!current) throw new HttpError(404, "Order not found");
@@ -42,6 +47,7 @@ export function PUT(request: Request, context: { params: Promise<{ id: string }>
 export function DELETE(_request: Request, context: { params: Promise<{ id: string }> }) {
   return runHandler(async () => {
     await prepareRequest();
+    await requireAdmin();
     const id = await readParams(context.params);
     const deleted = await OrderModel.findOneAndDelete({ id }).lean();
     if (!deleted) throw new HttpError(404, "Order not found");

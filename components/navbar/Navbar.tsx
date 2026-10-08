@@ -2,15 +2,18 @@
 
 import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useStore } from "@/components/providers/StoreProvider";
 import { shopLinks } from "@/data/site";
 import { cn } from "@/lib/cn";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { cart, hydrated } = useStore();
+  const { account, logout } = useAuth();
   const [openPath, setOpenPath] = useState<string | null>(null);
   const open = openPath === pathname;
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -59,12 +62,27 @@ export function Navbar() {
               </span>
             ) : null}
           </Link>
-          <Link
-            href="/login"
-            className="hidden h-9 items-center rounded-full bg-brand px-3 text-sm font-semibold text-white hover:bg-brand-dark sm:inline-flex"
-          >
-            Login
-          </Link>
+          {account ? (
+            <button
+              type="button"
+              className="hidden h-9 items-center rounded-full bg-brand px-3 text-sm font-semibold text-white hover:bg-brand-dark sm:inline-flex"
+              onClick={() => {
+                void logout().then(() => {
+                  router.push("/");
+                  router.refresh();
+                });
+              }}
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden h-9 items-center rounded-full bg-brand px-3 text-sm font-semibold text-white hover:bg-brand-dark sm:inline-flex"
+            >
+              Login
+            </Link>
+          )}
           <button
             type="button"
             className="grid h-10 w-10 place-items-center rounded-full text-ink hover:bg-stone-100 lg:hidden"
@@ -90,9 +108,24 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/login" className="rounded-xl px-3 py-3 text-sm font-medium text-brand">
-              Login
-            </Link>
+            {account ? (
+              <button
+                type="button"
+                className="rounded-xl px-3 py-3 text-left text-sm font-medium text-brand"
+                onClick={() => {
+                  void logout().then(() => {
+                    router.push("/");
+                    router.refresh();
+                  });
+                }}
+              >
+                Log out
+              </button>
+            ) : (
+              <Link href="/login" className="rounded-xl px-3 py-3 text-sm font-medium text-brand">
+                Login
+              </Link>
+            )}
           </div>
         </nav>
       ) : null}
