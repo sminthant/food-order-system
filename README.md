@@ -1,52 +1,101 @@
-# FoodGo
+# FoodGo — Food Ordering System
 
-FoodGo is a food ordering website where customers can browse meals, open a dish, manage a cart, and place a delivery order. An admin area covers the menu, categories, and order status. This phase is a frontend prototype: data lives in the browser, and nothing is saved to a database.
+FoodGo is a food ordering website. Customers browse a menu, open a dish, build a cart, and place a delivery order. Staff use an admin area to manage foods, categories, orders, and customers. Menu and order records are stored in MongoDB and reached through Next.js route handlers.
+
+## Team Members
+
+- [S Min Thant](https://github.com/sminthant)
 
 ## Tech Stack
 
 - Next.js
 - TypeScript
 - Tailwind CSS
-- React
-- Lucide React
-
-## Current Status
-
-Frontend development phase.
-
-The interface uses mock data and local browser state. Authentication, payments, and a server API are not connected.
+- MongoDB
+- Mongoose
+- REST API
 
 ## Features
 
-Customer pages:
+### Customer
 
-- Home, with categories, popular dishes, a promotion, and delivery highlights
-- Menu, with search, category filters, and sorting
-- Food details, with quantity and related dishes
-- Cart, with quantity changes, removal, delivery fee, and total
-- Checkout, with customer details, a promo code, and a payment-method preview
-- Orders, with status badges and order details
-- About and a login screen prepared for a later authentication phase
+- Browse food
+- Search and filter food
+- View food details
+- Add to cart
+- Checkout
+- View orders
 
-Admin pages:
+### Admin
 
-- Dashboard with order, revenue, customer, and menu counts
-- Food management with add, edit, and delete
-- Category management with add, edit, and delete
-- Order management with search, status filters, and status updates
-- Customer list and store settings
+- Dashboard
+- Food management
+- Category management
+- Order management
+- Customer management
 
-Placing an order, editing the menu, and changing a status all stay on this device until the page data is reset from Admin settings.
+## Screenshots
+
+### Homepage
+
+![FoodGo homepage](docs/screenshots/homepage.png)
+
+### Menu
+
+![Menu with search and category filters](docs/screenshots/menu.png)
+
+### Food details
+
+![Classic Cheeseburger details](docs/screenshots/food-details.png)
+
+### Cart
+
+![Shopping cart](docs/screenshots/cart.png)
+
+### Checkout
+
+![Checkout](docs/screenshots/checkout.png)
+
+### Orders
+
+![Customer orders](docs/screenshots/orders.png)
+
+### Admin dashboard
+
+![Admin dashboard](docs/screenshots/admin-dashboard.png)
+
+### Food management
+
+![Admin food management](docs/screenshots/admin-foods.png)
+
+### Category management
+
+![Admin category management](docs/screenshots/admin-categories.png)
+
+### Order management
+
+![Admin order management](docs/screenshots/admin-orders.png)
+
+## Development Status
+
+GitHub is the source-code repository for FoodGo.
+
+Vercel is used only as a development and preview deployment. It is not the final submission.
+
+The final university deployment will run on a VM, as required by the assignment. Serverless hosting is not the production target.
 
 ## Getting Started
 
+Create `.env.local` in the project root and set `MONGODB_URI` to the MongoDB Atlas connection string. That file is gitignored and must not be committed.
+
 ```bash
 npm install
+npm run seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). The admin area is at [http://localhost:3000/admin](http://localhost:3000/admin).
 
-The admin board is at [http://localhost:3000/admin](http://localhost:3000/admin).
+`npm run seed` upserts the sample menu, customers, and orders. `npm run seed -- --reset` replaces them. In development, Admin → Settings can restore the same sample data.
 
-Use the checkout code `FIRST20` to preview 20% off the food subtotal.
+The cart and store settings stay in the browser. Placing an order, editing a dish, or changing an order status writes to MongoDB. The checkout code `FIRST20` takes 20% off the food subtotal. Card payment on checkout is a preview and does not charge a card. The login screen does not create an account yet.
