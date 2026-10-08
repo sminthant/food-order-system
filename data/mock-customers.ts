@@ -1,0 +1,58 @@
+import type { Customer } from "@/types";
+
+export const customers: Customer[] = [
+  {
+    id: "cus-maya",
+    name: "Maya Chen",
+    email: "maya.chen@email.com",
+    phone: "081-234-5678",
+    address: "24 Sukhumvit Soi 11, Bangkok 10110",
+    joinedAt: "2026-01-12",
+    orderCount: 2,
+  },
+  {
+    id: "cus-arun",
+    name: "Arun Srisuk",
+    email: "arun.srisuk@email.com",
+    phone: "089-441-2201",
+    address: "88 Rama IV Road, Bangkok 10120",
+    joinedAt: "2026-03-02",
+    orderCount: 1,
+  },
+  {
+    id: "cus-lena",
+    name: "Lena Ortiz",
+    email: "lena.ortiz@email.com",
+    phone: "086-778-0192",
+    address: "15 Phahonyothin Road, Bangkok 10400",
+    joinedAt: "2026-04-18",
+    orderCount: 1,
+  },
+  {
+    id: "cus-noah",
+    name: "Noah Patel",
+    email: "noah.patel@email.com",
+    phone: "092-330-8844",
+    address: "7 Silom Road, Bangkok 10500",
+    joinedAt: "2026-02-09",
+    orderCount: 1,
+  },
+  {
+    id: "cus-priya",
+    name: "Priya Wong",
+    email: "priya.wong@email.com",
+    phone: "081-909-3345",
+    address: "42 Thonglor, Bangkok 10110",
+    joinedAt: "2026-05-21",
+    orderCount: 1,
+  },
+  {
+    id: "cus-kenji",
+    name: "Kenji Mori",
+    email: "kenji.mori@email.com",
+    phone: "083-221-6670",
+    address: "3 Sathorn Road, Bangkok 10120",
+    joinedAt: "2026-01-30",
+    orderCount: 2,
+  },
+];

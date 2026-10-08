@@ -1,0 +1,60 @@
+import type { Category } from "@/types";
+
+export const categories: Category[] = [
+  {
+    id: "burgers",
+    name: "Burgers",
+    slug: "burgers",
+    description: "Stacked beef and crispy chicken, finished with house sauce.",
+    icon: "beef",
+    image: "/images/burger-classic.jpg",
+  },
+  {
+    id: "pizza",
+    name: "Pizza",
+    slug: "pizza",
+    description: "Blistered crusts, melted cheese, and generous toppings.",
+    icon: "pizza",
+    image: "/images/pizza-margherita.jpg",
+  },
+  {
+    id: "chicken",
+    name: "Chicken",
+    slug: "chicken",
+    description: "Fried, glazed, and seared plates for sharing or one.",
+    icon: "drumstick",
+    image: "/images/chicken-fried.jpg",
+  },
+  {
+    id: "asian",
+    name: "Asian",
+    slug: "asian",
+    description: "Noodles, rice dishes, and sushi made for delivery.",
+    icon: "soup",
+    image: "/images/ramen.jpg",
+  },
+  {
+    id: "drinks",
+    name: "Drinks",
+    slug: "drinks",
+    description: "Cold sips to go with every meal.",
+    icon: "cup-soda",
+    image: "/images/thai-tea.jpg",
+  },
+  {
+    id: "desserts",
+    name: "Desserts",
+    slug: "desserts",
+    description: "Sweet finishes worth saving a little room for.",
+    icon: "cake",
+    image: "/images/cheesecake.jpg",
+  },
+  {
+    id: "sides",
+    name: "Sides",
+    slug: "sides",
+    description: "Fries and extras that complete the order.",
+    icon: "utensils",
+    image: "/images/fries.jpg",
+  },
+];
